@@ -1,0 +1,44 @@
+﻿--------
+Postup 
+--------
+1. V MSSMS sme si vytvorili databázu z názvom "twoCarts" na lokálnom servery s názvom "localdb".
+2. Databáza obsahuje tabuľku s názvom "cars", ktorá obsahuje 8 stĺpcov (cars_id, car_brand, car_model, car_bodyType, car_color, car_dateOfSale, car_price, car_country).	
+3. V zdrojovom súbore "appsettings.json" sme spravili prepojenie na databázu 
+  --------------------------------------------------------------------------------------
+  "ConnectionStrings": {
+    "DefaultConnection": "server=(localdb);database=twoCharts;Integrated Security=true;"
+  },
+  --------------------------------------------------------------------------------------
+4. Do zložky "Models" sme pridali novú triedu s názvom "salesEntity.cs" a do tejto triedy sme vložili GET a SET accessor metódy. 
+   a do cars_id sme dali [KEY]
+  --------------------------------------------------------------------------------------
+  public class salesEntity
+    {
+        [KEY]
+        public int cars_id { get; set; }
+
+        public string car_brand { get; set; }
+
+        public string car_model { get; set;}
+
+        public string car_bodyType { get; set;}
+
+        public string car_color { get; set;}
+
+        public DateTime car_dateOfSale { get; set;}
+
+        public int car_price { get; set;}
+
+        public string car_country { get; set;}
+
+    }
+  -----------------------------------------------------------------------------------------
+5. Do projektového riešenia pridávame NuGet s názvom "Microsoft.EntityFrameworkCore","Microsoft.EntityFrameworkCore.SqlServer" a
+   "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation"
+6. Do zdrojového súboru "Program.cs", pridáme builder pre RuntimeCompilaciu
+  -------------------------------------  
+   builder.Services.AddRazorPages()
+       .AddRazorRuntimeCompilation();
+  -------------------------------------
+7. Do projektu sme pridali novy súbor "DataLayer" a do tohto súboru sme pridali novu "triedu" s názvom "DbContextSales.cs"
+8. Do tohto súboru sme pridali "using Microsoft.EntityFrameworkCore" pre prácu s EntityFrameworkom a tak isto "using twoChartsTask.Models;"
