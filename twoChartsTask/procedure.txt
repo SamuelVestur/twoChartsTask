@@ -42,3 +42,76 @@ Postup
   -------------------------------------
 7. Do projektu sme pridali novy súbor "DataLayer" a do tohto súboru sme pridali novu "triedu" s názvom "DbContextSales.cs"
 8. Do tohto súboru sme pridali "using Microsoft.EntityFrameworkCore" pre prácu s EntityFrameworkom a tak isto "using twoChartsTask.Models;"
+9. Pridali sme takýto konštruktor do súboru "DbContextSales.cs" 
+   -----------------------------------------------------------------------------------------------
+   public class DbContextSales : DbContext
+    {
+        //definícia konštruktora pre triedu DbContextSales, ktorá zdedí základnu triedu DbContext 
+        public DbContextSales(DbContextOptions options) : base(options)
+        {
+        }
+
+
+        // Kolekcia objektov / reprezentácia tabuľky cars
+        public DbSet<salesEntity> cars { get; set; }
+    }
+    ----------------------------------------------------------------------------------------------
+10. Do súboru "Program.cs" sme pridali tieto riadky
+    -------------------------------------
+    using Microsoft.EntityFrameworkCore;
+    using twoChartsTask.DataLayer;
+    using twoChartsTask.Models;
+    -------------------------------------
+    potom sme pridali takýto builder, ktorý nastavuje pripojenie k databáze 
+    ------------------------------------------------------------------------
+    builder.Services.AddDbContext<DbContextSales>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    -------------------------------------------------------------------------------------------
+11. Do súboru "Controllers" pridáme nový kontroler s názvom "SalesRecordsController.cs"
+12. V súbore "SalesRecordsController.cs" sme vytvorili Akčnú metódu z názvom "ShowSalesData" a vytvorili pre ňu View (pravím stlačením mišky na danú akčnú metódu)
+    ----------------------------------------
+     public IActionResult ShowSalesData() 
+        {
+            return View(); 
+        }
+    ----------------------------------------
+    Po vytvorení View súboru z názvom "ShowSalesData.cshtml" sme do tohto súboru pridali tento Layout:
+    ----------------------------------------
+    @{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    ----------------------------------------
+    Potom sme do tohoto istého súboru pridali tento link pre grafy charts.js a tak isto sme tento link pridali aj do súboru "_Layout.cshtml" do sekcie kde sa nachádza "@RenderBody()"
+    --------------------------------------------------------------
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    --------------------------------------------------------------
+13. Do súboru "ShowSalesData.cshtml" sme pridali tento script, ktorý predstavuje graf 
+    --------------------------------------------------------------
+    <script>
+        const ctx = document.getElementById('myChart');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                datasets: [{
+                    label: '# of Votes',
+                    data: [12, 19, 3, 5, 2, 3],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+    -------------------------------------------------------------
+    
+    
+    
+
+
