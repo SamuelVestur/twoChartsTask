@@ -110,7 +110,40 @@ Postup
         });
     </script>
     -------------------------------------------------------------
-    
+14. Ako další krok sme pridali do zdrojového súboru "SalesRecordsColntroller.cs" tieto "using"
+    -------------------------------
+    using twoChartsTask.DataLayer;
+    using twoChartsTask.Models;
+    ------------------------------
+    potom sme si vytvorilu privátnu premennú 
+    -----------------------------------------
+    private readonly DbContextSales _context;
+    -----------------------------------------
+    potom sme si vytvorili konštruktor tejto triedy 
+    ------------------------------------------------------
+    public SalesRecordsController(DbContextSales context)
+        {
+            _context = context;
+        }
+    -------------------------------------------------------
+    Potom sme vyvtorili HTTP POST metodu pre pre ziskanie dat 
+    ----------------------------------------------------------
+    [HttpPost]
+        public List<object> GetSalesData()
+        {
+            List<object> data = new List<object>();
+
+            List<string> labels = _context.cars.Select(p=>p.car_brand).ToList();    
+
+            data.Add(labels);
+
+            List<int> SalesNumber = _context.cars.Select(p => p.car_price).ToList();
+
+            data.Add(SalesNumber);
+
+            return data;
+        }
+    ----------------------------------------------------------------
     
     
 

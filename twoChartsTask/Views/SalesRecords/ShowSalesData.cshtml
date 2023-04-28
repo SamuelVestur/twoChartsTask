@@ -1,32 +1,85 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<p>
+    <div class="row">
+        <div class="col-1">
+            <label><b>Chart-Type</b></label>
+        </div>
+
+        <div class="col-2">
+            <select id="ChartType" class="form-control" style="width:180px">
+                <option selected>--Select Chart Type--</option>
+                <option>bar</option>
+                <option>line</option>
+                <option>pie</option>
+                <option>doughnut</option>
+            </select>
+        </div>
+
+        <div class="col-4">
+            <input id="ID" value="Show Graph" type="button" />
+        </div>
+    </div>
+</p>
 
 
 <div>
-  <canvas id="myChart"></canvas>
+  <canvas id="myChart" style="max-width:700px;max-height:630px"></canvas>
 </div>
 
-<script>
-    const ctx = document.getElementById('myChart');
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-            datasets: [{
-                label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
+@*Ajaxové volanie*@ 
+<script type="text/javascript">
+    
+    $(function (){
+        $("#ID").click(function (){
+            $.ajax({
+                type: "POST",
+                url: "/SalesRecords/GetSalesData",
+                data: "",
+                contextType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: OnSuccessResult,
+                error: OnError
+            });
+
+            // Ak je úspešne vykresli tento graf
+            function OnSuccessResult(data) {
+                var _data = data;
+                var _chartLabels = _data[0];
+                var _chartData = _data[1];
+
+                // Generovanie náhodných farieb
+                var colors = _chartData.map(() => {
+                    var r = Math.floor(Math.random() * 255);
+                    var g = Math.floor(Math.random() * 255);
+                    var b = Math.floor(Math.random() * 255);
+                    return `rgb(${r}, ${g}, ${b})`;
+                });
+
+                new Chart("myChart", {
+                    type: "bar",
+                    data: {
+                        labels: _chartLabels,
+                        datasets: [{
+                            backgroundColor: colors,
+                            data: _chartData
+                        }]
+                    }
+                });
             }
-        }
+
+
+            function OnError(err) {
+
+            }
+
+
+
+        });
     });
+
 </script>
